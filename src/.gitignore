@@ -1,0 +1,13 @@
+# datasets (too large for GitHub)
+src/dataset/
+src/dataset_seq/
+
+# trained models (large binary files)
+src/*.h5
+
+# Python cache
+__pycache__/
+*.pyc
+
+# test frames
+src/outputs/test_frames/
