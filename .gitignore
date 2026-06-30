@@ -1,8 +1,5 @@
-@"
 src/dataset/
 src/dataset_seq/
-src/*.h5
 __pycache__/
 *.pyc
 src/outputs/test_frames/
-"@ | Out-File -FilePath .gitignore -Encoding utf8
