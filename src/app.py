@@ -8,9 +8,13 @@ import streamlit as st
 import numpy as np
 import cv2
 from PIL import Image
-import os
 import tempfile
 from tensorflow.keras.models import load_model
+import os
+# Ensure all relative paths (models, outputs/) resolve correctly
+# regardless of the working directory the app is launched from
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+os.chdir(APP_DIR)
 
 from encoder import text_to_binary
 from decoder import binary_to_text
