@@ -239,7 +239,7 @@ st.markdown("""
 <div class="hero">
     <div class="hero-badge">Sender → Channel → Receiver</div>
     <div class="hero-title">🌊 Underwater Optical Communication System</div>
-    <div class="hero-sub">AI-assisted flashlight-to-camera data transmission · Based on U-Flash (IMWUT 2024) · Supervised by Mr Tushar Patnaik </div>
+    <div class="hero-sub">AI-assisted flashlight-to-camera data transmission · Based on U-Flash (IMWUT 2024) · Supervised by Prof. Arnab Paul</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -416,28 +416,29 @@ with tab_channel:
         "light bleeds between consecutive frames."
     )
 
-    if st.session_state.binary is None:
-        st.markdown(
-            '<div class="info-banner">⚠️ No transmitted signal yet — go to the '
-            '<b>Sender</b> tab and click Encode &amp; Transmit first.</div>',
-            unsafe_allow_html=True
-        )
-    else:
-        cfg1, cfg2, cfg3, cfg4 = st.columns([1, 1, 1, 0.7])
-        with cfg1:
-            difficulty_input = st.selectbox("Scattering difficulty",
-                ["easy", "medium", "hard", "extreme", "brutal"],
-                index=["easy", "medium", "hard", "extreme", "brutal"].index(st.session_state.difficulty))
-        with cfg2:
-            motion_input = st.slider("Motion strength", 0.0, 3.0, st.session_state.motion_strength, 0.5)
-        with cfg3:
-            bleed_input = st.slider("ISI bleed strength", 0.0, 0.6, st.session_state.bleed_strength, 0.05)
-        with cfg4:
-            st.write("")
-            st.write("")
-            apply_btn = st.button("🌊 Apply Channel", use_container_width=True, type="primary")
+    cfg1, cfg2, cfg3, cfg4 = st.columns([1, 1, 1, 0.7])
+    with cfg1:
+        difficulty_input = st.selectbox("Scattering difficulty",
+            ["easy", "medium", "hard", "extreme", "brutal"],
+            index=["easy", "medium", "hard", "extreme", "brutal"].index(st.session_state.difficulty))
+    with cfg2:
+        motion_input = st.slider("Motion strength", 0.0, 3.0, st.session_state.motion_strength, 0.5)
+    with cfg3:
+        bleed_input = st.slider("ISI bleed strength", 0.0, 0.6, st.session_state.bleed_strength, 0.05)
+    with cfg4:
+        st.write("")
+        st.write("")
+        apply_btn = st.button("🌊 Apply Channel", use_container_width=True, type="primary")
 
-        if apply_btn:
+    if apply_btn:
+        if st.session_state.binary is None:
+            st.markdown(
+                '<div class="info-banner">⚠️ No transmitted signal yet — go to the '
+                '<b>Sender</b> tab and click Encode &amp; Transmit first, then come back '
+                'and click Apply Channel.</div>',
+                unsafe_allow_html=True
+            )
+        else:
             orig_bleed = sg.BLEED_STRENGTH_BY_DIFFICULTY.get(difficulty_input, 0.15)
             sg.BLEED_STRENGTH_BY_DIFFICULTY[difficulty_input] = bleed_input
             noisy_frames = generate_sequence(
@@ -450,24 +451,27 @@ with tab_channel:
             st.session_state.motion_strength = motion_input
             st.session_state.bleed_strength  = bleed_input
 
-        if st.session_state.noisy_frames is not None:
-            binary = st.session_state.binary
-            stage_header(1, "Signal entering the water (ideal pulses)", channel=True)
-            in_cols = st.columns(min(len(binary), 10))
-            for i, (col, bit) in enumerate(zip(in_cols, binary)):
-                col.image(frame_to_pil(st.session_state.clean_frames[i], 56), caption=f"bit={bit}")
-            st.markdown("</div>", unsafe_allow_html=True)
-            st.markdown('<div class="arrow">↓ through water ↓</div>', unsafe_allow_html=True)
+    if st.session_state.binary is None and not apply_btn:
+        st.caption("💡 Tip: encode a message in the **Sender** tab first, then apply the channel here.")
 
-            stage_header(2, f"Signal after the channel ({st.session_state.difficulty}, "
-                            f"motion={st.session_state.motion_strength}, "
-                            f"bleed={st.session_state.bleed_strength})", channel=True)
-            out_cols = st.columns(min(len(binary), 10))
-            for i, (col, bit) in enumerate(zip(out_cols, binary)):
-                col.image(frame_to_pil(st.session_state.noisy_frames[i], 56), caption=f"bit={bit}")
-            st.markdown("</div>", unsafe_allow_html=True)
+    if st.session_state.noisy_frames is not None:
+        binary = st.session_state.binary
+        stage_header(1, "Signal entering the water (ideal pulses)", channel=True)
+        in_cols = st.columns(min(len(binary), 10))
+        for i, (col, bit) in enumerate(zip(in_cols, binary)):
+            col.image(frame_to_pil(st.session_state.clean_frames[i], 56), caption=f"bit={bit}")
+        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('<div class="arrow">↓ through water ↓</div>', unsafe_allow_html=True)
 
-            st.success("✅ Channel simulation applied — go to the **Receiver** tab to decode.")
+        stage_header(2, f"Signal after the channel ({st.session_state.difficulty}, "
+                        f"motion={st.session_state.motion_strength}, "
+                        f"bleed={st.session_state.bleed_strength})", channel=True)
+        out_cols = st.columns(min(len(binary), 10))
+        for i, (col, bit) in enumerate(zip(out_cols, binary)):
+            col.image(frame_to_pil(st.session_state.noisy_frames[i], 56), caption=f"bit={bit}")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        st.success("✅ Channel simulation applied — go to the **Receiver** tab to decode.")
 
     st.divider()
     st.markdown('<div class="section-label">🔬 Live Effect Visualizer</div>', unsafe_allow_html=True)
@@ -677,6 +681,6 @@ with tab_results:
 st.markdown("""
 <footer class="app-footer">
     AI-Assisted Underwater Optical Communication · JSS Academy of Technical Engineering, Noida ·
-    C-DAC Internship · Supervised by Mr Tushar Patnaik
+    C-DAC Internship · Supervised by Prof. Arnab Paul
 </footer>
 """, unsafe_allow_html=True)
