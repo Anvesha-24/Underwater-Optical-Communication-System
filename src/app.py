@@ -239,7 +239,7 @@ st.markdown("""
 <div class="hero">
     <div class="hero-badge">Sender → Channel → Receiver</div>
     <div class="hero-title">🌊 Underwater Optical Communication System</div>
-    <div class="hero-sub">AI-assisted flashlight-to-camera data transmission · Based on U-Flash (IMWUT 2024) · Supervised by Prof. Arnab Paul</div>
+    <div class="hero-sub">AI-assisted flashlight-to-camera data transmission</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -680,7 +680,6 @@ with tab_results:
 
 st.markdown("""
 <footer class="app-footer">
-    AI-Assisted Underwater Optical Communication · JSS Academy of Technical Engineering, Noida ·
-    C-DAC Internship · Supervised by Prof. Arnab Paul
+    AI-Assisted Underwater Optical Communication ·
 </footer>
 """, unsafe_allow_html=True)
